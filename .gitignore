@@ -1,0 +1,11 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.vite
+
+# Generated PWA icons (rasterized from inline SVG at build time — never committed)
+public/pwa-*.png
+public/apple-touch-icon.png
+public/favicon.png

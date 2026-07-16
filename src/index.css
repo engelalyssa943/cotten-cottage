@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Fredoka', ui-rounded, system-ui, sans-serif;
+    background: var(--cc-cream, #fbf7f0);
+    color: var(--cc-ink, #4a3b45);
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Children paw at the screen — nothing should be accidentally draggable. */
+  img,
+  svg,
+  button {
+    -webkit-user-drag: none;
+  }
+}
+
+/* Award celebration (rendered by the engine, not by games). */
+@keyframes cc-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  14% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+  28% {
+    transform: scale(1);
+  }
+  82% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
