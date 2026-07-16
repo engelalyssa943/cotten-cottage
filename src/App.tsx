@@ -14,6 +14,7 @@ import { Cottage } from './shell/Cottage';
 import { RoomView } from './shell/RoomView';
 import { ParentArea } from './shell/ParentArea';
 import { WindDown } from './shell/WindDown';
+import { ExitCorner } from './shell/ExitCorner';
 
 export default function App() {
   const hydrate = useApp((s) => s.hydrate);
@@ -66,6 +67,7 @@ export default function App() {
         return active && game ? (
           <div className="h-screen w-screen">
             <GameHost game={game} profile={active} onExit={pop} />
+            <ExitCorner onExit={pop} />
           </div>
         ) : (
           <ProfileSelect />

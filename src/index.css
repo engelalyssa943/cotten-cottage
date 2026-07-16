@@ -82,6 +82,19 @@
   50% { opacity: 1; }
 }
 
+/* Aquarium bubbles rising to the surface. */
+@keyframes cc-bubble {
+  0% { transform: translateY(0) scale(0.5); opacity: 0; }
+  20% { opacity: 0.75; }
+  100% { transform: translateY(-170px) scale(1); opacity: 0; }
+}
+.cc-bubble {
+  background: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.28));
+  animation-name: cc-bubble;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
 /* Award celebration (rendered by the engine, not by games). */
 @keyframes cc-pop {
   0% {
