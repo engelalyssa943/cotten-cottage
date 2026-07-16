@@ -53,9 +53,12 @@ export interface ResolvedTheme {
 }
 
 export interface SoundApi {
-  blip(): void;
-  pop(): void;
-  chime(): void;
+  /** `step` shifts the note up a pentatonic scale, so sequences of taps make a
+   *  little melody instead of the same click 50 times. Omit it for the plain sound.
+   *  The scale means a wrong note is not reachable. */
+  blip(step?: number): void;
+  pop(step?: number): void;
+  chime(step?: number): void;
   splash(): void;
   sparkle(): void;
   /** Two-note "collected!" motif. */

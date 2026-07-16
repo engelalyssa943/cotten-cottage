@@ -33,6 +33,19 @@ function vary(base: number, cents = 22): number {
   return base * Math.pow(2, c / 1200);
 }
 
+// Major pentatonic. Every step lands on a note that agrees with every other one,
+// so a child mashing decorations composes something pleasant by construction.
+const PENTATONIC = [0, 2, 4, 7, 9];
+
+/** Shift `base` up the pentatonic scale by `step` degrees (undefined = unshifted). */
+function stepFreq(base: number, step?: number): number {
+  if (step === undefined) return base;
+  const len = PENTATONIC.length;
+  const octave = Math.floor(step / len);
+  const degree = ((step % len) + len) % len;
+  return base * Math.pow(2, (PENTATONIC[degree] + octave * 12) / 12);
+}
+
 interface ToneSpec {
   freq: number;
   type?: OscillatorType;
@@ -77,12 +90,13 @@ export function createSound(opts: SynthOptions): SoundApi {
   }
 
   return {
-    blip: () => play([{ freq: 620, type: 'sine', dur: 0.08, gain: 0.16 }]),
-    pop: () => play([{ freq: 360, type: 'triangle', dur: 0.06, slideTo: 720, gain: 0.15 }]),
-    chime: () =>
+    blip: (step?: number) => play([{ freq: stepFreq(620, step), type: 'sine', dur: 0.08, gain: 0.16 }]),
+    pop: (step?: number) =>
+      play([{ freq: stepFreq(360, step), type: 'triangle', dur: 0.06, slideTo: stepFreq(720, step), gain: 0.15 }]),
+    chime: (step?: number) =>
       play([
-        { freq: 880, type: 'sine', dur: 0.24, gain: 0.13 },
-        { freq: 1320, type: 'sine', dur: 0.3, gain: 0.08, delay: 0.04 },
+        { freq: stepFreq(880, step), type: 'sine', dur: 0.24, gain: 0.13 },
+        { freq: stepFreq(1320, step), type: 'sine', dur: 0.3, gain: 0.08, delay: 0.04 },
       ]),
     splash: () => play([{ freq: 240, type: 'sine', dur: 0.18, slideTo: 120, gain: 0.15 }]),
     sparkle: () =>

@@ -5,10 +5,11 @@ export type Topper = 'star' | 'heart' | 'bow' | 'strawberry' | 'flower' | 'candl
 export const TOPPERS: Topper[] = ['star', 'heart', 'bow', 'strawberry', 'flower', 'candle'];
 
 /** A cake topper, centered, as a standalone SVG (used on the cake and in the tray). */
-export const TopperSVG: FC<{ kind: Topper; size?: number; className?: string }> = ({
+export const TopperSVG: FC<{ kind: Topper; size?: number; className?: string; lit?: boolean }> = ({
   kind,
   size = 60,
   className,
+  lit = false,
 }) => {
   const common = { width: size, height: size, className, style: { overflow: 'visible' as const } };
   switch (kind) {
@@ -53,11 +54,19 @@ export const TopperSVG: FC<{ kind: Topper; size?: number; className?: string }> 
       );
     case 'candle':
       return (
-        <svg viewBox="-14 -40 28 72" {...common}>
+        <svg viewBox="-24 -44 48 76" {...common}>
+          {lit && (
+            <circle cx="0" cy="-22" r="20" fill="#FFD98A" opacity="0.42" style={{ filter: 'blur(6px)' }} />
+          )}
           <rect x="-6" y="-8" width="12" height="40" rx="4" fill="#8FC7E8" />
           <rect x="-6" y="-8" width="4" height="40" rx="2" fill="#B7DEF3" opacity="0.7" />
-          <path d="M0 -30 C 7 -22 6 -12 0 -12 C -6 -12 -7 -22 0 -30 Z" fill="#F6A64F" />
-          <path d="M0 -26 C 3 -21 3 -15 0 -15 C -3 -15 -3 -21 0 -26 Z" fill="#F6C948" />
+          <rect x="-1" y="-14" width="2" height="7" rx="1" fill="#6B5A4A" />
+          {lit && (
+            <g className="cc-flame">
+              <path d="M0 -34 C 8 -25 7 -13 0 -13 C -7 -13 -8 -25 0 -34 Z" fill="#F6A64F" />
+              <path d="M0 -29 C 4 -23 4 -16 0 -16 C -4 -16 -4 -23 0 -29 Z" fill="#FCE59A" />
+            </g>
+          )}
         </svg>
       );
   }

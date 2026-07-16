@@ -82,6 +82,107 @@
   50% { opacity: 1; }
 }
 
+/* SVG bits the tank/cake simulations drive directly need a sane transform origin. */
+[data-eye],
+.cc-pip,
+.cc-sprinkle {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* --- Caustics: dappled light drifting on the water --- */
+@keyframes cc-drift-a {
+  0% { transform: translate(0, 0) scale(1); opacity: 0.45; }
+  100% { transform: translate(64px, 30px) scale(1.28); opacity: 0.85; }
+}
+@keyframes cc-drift-b {
+  0% { transform: translate(0, 0) scale(1.12); opacity: 0.75; }
+  100% { transform: translate(-72px, 24px) scale(0.84); opacity: 0.4; }
+}
+@keyframes cc-shaft {
+  0% { transform: skewX(-7deg) scaleY(1); opacity: 0.45; }
+  100% { transform: skewX(9deg) scaleY(1.08); opacity: 0.85; }
+}
+
+/* A ring spreading across the surface where a finger broke the water. */
+@keyframes cc-ripple {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0.65; }
+  100% { transform: translate(-50%, -50%) scale(3.4); opacity: 0; }
+}
+.cc-ripple {
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  animation: cc-ripple 900ms ease-out forwards;
+}
+
+/* New water pouring down over the old, rather than snapping to a new color. */
+@keyframes cc-pour {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+.cc-pour { animation: cc-pour 700ms cubic-bezier(0.4, 0.1, 0.2, 1) forwards; }
+
+/* Something dropped into the tank settling onto the gravel. */
+@keyframes cc-land {
+  0% { transform: translateY(-20px) scale(1.3); }
+  55% { transform: translateY(0) scale(0.9); }
+  75% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+.cc-land { animation: cc-land 520ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+
+@keyframes cc-dust {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0.5; }
+  100% { transform: translate(-50%, -50%) scale(2.8); opacity: 0; }
+}
+.cc-dust { animation: cc-dust 620ms ease-out forwards; }
+
+/* --- Cake --- */
+@keyframes cc-pip {
+  0% { transform: scale(0); opacity: 0; }
+  62% { transform: scale(1.35); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.cc-pip { animation: cc-pip 260ms cubic-bezier(0.2, 0.9, 0.3, 1.4) both; }
+
+@keyframes cc-sprinkle {
+  0% { transform: translateY(-70px); opacity: 0; }
+  35% { opacity: 1; }
+  72% { transform: translateY(5px); }
+  86% { transform: translateY(-2px); }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.cc-sprinkle { animation: cc-sprinkle 620ms cubic-bezier(0.3, 0.8, 0.4, 1.1) both; }
+
+/* New frosting spreading out from the middle, rather than snapping to a color. */
+@keyframes cc-frost {
+  from { clip-path: circle(0% at 50% 46%); }
+  to { clip-path: circle(85% at 50% 46%); }
+}
+.cc-frost { animation: cc-frost 520ms ease-out forwards; }
+
+@keyframes cc-wobble {
+  0% { transform: rotate(0) skewX(0); }
+  18% { transform: rotate(-2.2deg) skewX(2.6deg) scaleY(0.97); }
+  38% { transform: rotate(1.8deg) skewX(-2deg) scaleY(1.03); }
+  58% { transform: rotate(-1deg) skewX(1deg); }
+  78% { transform: rotate(0.5deg) skewX(-0.5deg); }
+  100% { transform: none; }
+}
+.cc-wobble {
+  animation: cc-wobble 640ms ease-out;
+  transform-origin: 50% 92%;
+}
+
+@keyframes cc-flame {
+  0%, 100% { transform: scaleY(1) scaleX(1); opacity: 1; }
+  50% { transform: scaleY(1.2) scaleX(0.9); opacity: 0.88; }
+}
+.cc-flame {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: cc-flame 320ms ease-in-out infinite;
+}
+
 /* Aquarium bubbles rising to the surface. */
 @keyframes cc-bubble {
   0% { transform: translateY(0) scale(0.5); opacity: 0; }

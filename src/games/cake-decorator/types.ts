@@ -7,6 +7,8 @@ export interface PlacedTopper {
   kind: Topper;
   fx: number; // fraction of the cake box (0..1)
   fy: number;
+  /** Candles only. Tap to light, tap to blow out, forever. */
+  lit?: boolean;
 }
 
 export interface Cake {
@@ -16,7 +18,13 @@ export interface Cake {
   piping: string | null;
   sprinkles: string | null;
   toppers: PlacedTopper[];
+  /** A slice taken out so you can see the inside. Always reversible. */
+  cut?: boolean;
 }
+
+/** What's inside every cake, revealed by cutting a slice. */
+export const SPONGE = '#F5DFB4';
+export const FILLING = '#EE7FA2';
 
 export interface BakerySave {
   cakes: Cake[];

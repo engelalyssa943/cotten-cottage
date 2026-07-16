@@ -36,7 +36,9 @@ export const FishSVG: FC<{ species: Species; size?: number; className?: string }
       <svg viewBox="-70 -60 140 120" width={size} height={size} className={className} style={{ overflow: 'visible' }}>
         <path d="M-6 -46 q -26 6 -22 34 q 3 22 -10 34 q -16 12 -2 22 q 8 5 12 -6 q 6 -18 2 -30 q -3 -20 14 -30 q 20 -12 14 -30 q -8 -12 -20 6 Z" fill={c.body} />
         <path d="M-2 -46 q 14 -12 22 -2 q -8 6 -18 8 Z" fill={c.fin} />
-        <circle cx="-6" cy="-34" r="4" fill="#2a2a2a" />
+        <g data-eye>
+          <circle cx="-6" cy="-34" r="4" fill="#2a2a2a" />
+        </g>
       </svg>
     );
   }
@@ -47,8 +49,10 @@ export const FishSVG: FC<{ species: Species; size?: number; className?: string }
         {[-26, -10, 6, 22].map((x, i) => (
           <path key={i} d={`M${x} 0 q 6 24 -2 44`} stroke={c.fin} strokeWidth="5" fill="none" strokeLinecap="round" />
         ))}
-        <circle cx="-12" cy="-14" r="4" fill="#ffffff" />
-        <circle cx="12" cy="-14" r="4" fill="#ffffff" />
+        <g data-eye>
+          <circle cx="-12" cy="-14" r="4" fill="#ffffff" />
+          <circle cx="12" cy="-14" r="4" fill="#ffffff" />
+        </g>
       </svg>
     );
   }
@@ -66,8 +70,10 @@ export const FishSVG: FC<{ species: Species; size?: number; className?: string }
           <path d="M6 -28 q 10 28 0 56 q -8 -3 -8 -28 q 0 -25 8 -28 Z" />
         </g>
       )}
-      <circle cx="-24" cy="-6" r="7" fill="#ffffff" />
-      <circle cx="-25" cy="-6" r="4" fill="#2a2a2a" />
+      <g data-eye>
+        <circle cx="-24" cy="-6" r="7" fill="#ffffff" />
+        <circle cx="-25" cy="-6" r="4" fill="#2a2a2a" />
+      </g>
     </svg>
   );
 };

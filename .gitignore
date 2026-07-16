@@ -5,6 +5,9 @@ dist-ssr
 .DS_Store
 .vite
 
+# Local dev-server launch config
+.claude/launch.json
+
 # Generated PWA icons (rasterized from inline SVG at build time — never committed)
 public/pwa-*.png
 public/apple-touch-icon.png
