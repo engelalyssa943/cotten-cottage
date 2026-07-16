@@ -29,6 +29,59 @@
   }
 }
 
+/* Dollhouse interactive zones */
+.cc-zone {
+  cursor: pointer;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.3, 1.2);
+  outline: none;
+}
+.cc-zone:hover {
+  transform: scale(1.03);
+}
+.cc-zone:active {
+  transform: scale(0.96);
+}
+.cc-reduce .cc-zone {
+  transition: none;
+}
+.cc-reduce .cc-zone:hover {
+  transform: none;
+}
+
+@keyframes cc-room-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.cc-room-in {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: cc-room-in 0.5s cubic-bezier(0.2, 0.8, 0.3, 1.2) both;
+}
+
+@keyframes cc-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-5px); }
+  80% { transform: translateX(5px); }
+}
+.cc-shake {
+  animation: cc-shake 0.4s ease;
+}
+
+@keyframes cc-twinkle {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
 /* Award celebration (rendered by the engine, not by games). */
 @keyframes cc-pop {
   0% {

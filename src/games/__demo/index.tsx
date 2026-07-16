@@ -22,9 +22,13 @@ const StarArt = ({ found, className }: { found: boolean; className?: string }) =
 const demo: GameModule = {
   id: '__demo',
   title: 'Demo',
-  rooms: ['sunroom'],
+  // TEMP (Stage 2 only): spread across a few rooms so the dollhouse shell can be
+  // seen with an interior room, the garden yard, and Aunt Alyssa's door + "new!"
+  // ribbon. Reverted/deleted in Stage 3 when the real games arrive.
+  rooms: ['sunroom', 'garden', 'door'],
   bands: ['sprout', 'bud', 'bloom', 'star'],
   themes: ['fidget'],
+  publishedAt: new Date().toISOString().slice(0, 10),
   Icon: DemoIcon,
   Game: lazy(() => import('./Game')),
   collectibles: [

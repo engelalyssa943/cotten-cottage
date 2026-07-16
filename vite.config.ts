@@ -1,5 +1,6 @@
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
 
 // Served from a GitHub Pages project site by default (https://<user>.github.io/<repo>/).
 // Override with VITE_BASE at build time if your repo name differs.
@@ -39,5 +40,36 @@ function cspPlugin(): Plugin {
 
 export default defineConfig({
   base,
-  plugins: [react(), cspPlugin()],
+  plugins: [
+    react(),
+    cspPlugin(),
+    VitePWA({
+      // Updates never apply mid-session; the waiting worker activates on the next
+      // cold start. We register the SW ourselves in src/pwa/registerSW.ts.
+      registerType: 'prompt',
+      injectRegister: null,
+      includeAssets: ['apple-touch-icon.png', 'favicon.png'],
+      manifest: {
+        name: 'Cotten Cottage',
+        short_name: 'Cottage',
+        description: 'A cozy little house of gentle things to make and play with.',
+        display: 'standalone',
+        orientation: 'landscape',
+        background_color: '#FBF7F0',
+        theme_color: '#FBF7F0',
+        start_url: '.',
+        scope: '.',
+        icons: [
+          { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'pwa-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'pwa-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,woff,woff2,png,svg}'],
+        cleanupOutdatedCaches: true,
+      },
+      devOptions: { enabled: false },
+    }),
+  ],
 });
