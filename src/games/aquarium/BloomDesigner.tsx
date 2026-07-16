@@ -108,6 +108,8 @@ export function BloomDesigner({ save, award, sound, theme, reduceMotion }: GameP
   const melody = useRef({ step: 0, at: 0 });
   const stateRef = useRef(state);
   stateRef.current = state;
+  /** Plant items, recomputed only when the tank changes — not every frame. */
+  const plantItems = useRef<Item[]>([]);
 
   const env = useRef<SimEnv>({
     w: 0, h: 0, attractor: null, flakes: [], plants: [], timeScale: 1, reduceMotion,
@@ -157,9 +159,8 @@ export function BloomDesigner({ save, award, sound, theme, reduceMotion }: GameP
         );
       }
     }
-    env.current.plants = state.items
-      .filter((i) => i.kind === 'decor:plant')
-      .map((i) => ({ x: i.fx * w, y: i.fy * h }));
+    plantItems.current = state.items.filter((i) => i.kind === 'decor:plant');
+    env.current.plants = plantItems.current.map((i) => ({ x: i.fx * w, y: i.fy * h }));
     setTick((t) => t + 1);
   }, [state.items]);
 
@@ -202,10 +203,15 @@ export function BloomDesigner({ save, award, sound, theme, reduceMotion }: GameP
           setFlakeIds((ids) => [...ids, ...made.map((f) => f.id)]);
         }
 
-        for (const f of [...e.flakes]) {
+        // Backwards, so a flake can be removed without copying the array.
+        for (let i = e.flakes.length - 1; i >= 0; i--) {
+          const f = e.flakes[i];
           f.y += f.vy * dt;
           f.x += Math.sin(now / 700 + f.id) * 6 * dt;
-          if (f.y > e.h - 60) dropFlake(f.id);
+          if (f.y > e.h - 60) {
+            dropFlake(f.id);
+            continue;
+          }
           const node = flakeEls.current.get(f.id);
           if (node) node.style.transform = `translate(${f.x}px, ${f.y}px) translate(-50%, -50%)`;
         }
@@ -216,7 +222,7 @@ export function BloomDesigner({ save, award, sound, theme, reduceMotion }: GameP
           if (node) paintFish(node, f, e);
         }
 
-        for (const p of stateRef.current.items.filter((i) => i.kind === 'decor:plant')) {
+        for (const p of plantItems.current) {
           const node = plantEls.current.get(p.id);
           if (!node) continue;
           const { sway, bend } = plantMotion(p.fx * e.w, p.fy * e.h, fish.current, now, e.reduceMotion);

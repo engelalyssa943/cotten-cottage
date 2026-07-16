@@ -26,6 +26,16 @@ const TEMPER: Record<Temperament, TemperSpec> = {
 
 export const TEMPERAMENTS: Temperament[] = ['darty', 'lazy', 'curious'];
 
+/**
+ * A special species' gait IS its character, so it must not be scaled by whatever
+ * temperament it happened to roll. Left scaled, a "lazy" jellyfish drifts at
+ * ~5px/s and a lazy seahorse takes half a minute to reach a plant — you'd simply
+ * never see them do the thing that makes them themselves. Fixed px/sec instead.
+ */
+const DRIFT_SPEED = 22; // jellyfish, going wherever it likes
+const CLING_SPEED = 70; // seahorse, on its way to a plant
+const PATROL_SPEED = 42; // angelfish, never hurrying
+
 type Style = 'normal' | 'drifter' | 'clinger' | 'regal';
 
 /** The discovered creatures each move in a way that's unmistakably theirs. */
@@ -180,7 +190,7 @@ function stepInner(f: SimFish, env: SimEnv, dtRaw: number, now: number): void {
 
   // 2. The jellyfish answers to nobody. It just drifts and pulses.
   if (f.style === 'drifter') {
-    f.x += f.dir * f.speed * 0.28 * slow * dt;
+    f.x += f.dir * DRIFT_SPEED * slow * dt;
     if (f.x < env.w * 0.08) f.dir = 1;
     if (f.x > env.w * 0.92) f.dir = -1;
     f.baseY += Math.sin(f.bob * 0.35) * 14 * slow * dt;
@@ -242,14 +252,14 @@ function stepInner(f: SimFish, env: SimEnv, dtRaw: number, now: number): void {
     }
     const tx = anchor.x + 34;
     const ty = anchor.y - 54;
-    if (Math.hypot(tx - f.x, ty - f.baseY) > 18) swimTo(tx, ty, 0.5);
+    if (Math.hypot(tx - f.x, ty - f.baseY) > 18) swimTo(tx, ty, CLING_SPEED / f.speed);
     f.y = f.baseY + Math.sin(f.bob * 0.8) * 7;
     return;
   }
 
   // 7. The angelfish patrols, grandly, and never hurries.
   if (f.style === 'regal') {
-    f.x += f.dir * f.speed * 0.42 * slow * dt;
+    f.x += f.dir * PATROL_SPEED * slow * dt;
     if (f.x < env.w * 0.14) f.dir = 1;
     if (f.x > env.w * 0.86) f.dir = -1;
     f.baseY += (f.homeY - f.baseY) * 0.4 * dt;
@@ -299,6 +309,20 @@ export function depthOf(y: number, h: number) {
   return { scale: 0.74 + d * 0.46, z: Math.round(100 + d * 400), opacity: 0.82 + d * 0.18 };
 }
 
+// Per-frame DOM lookups add up fast (one query per fish per frame is ~360/sec at
+// 60fps). Resolve each fish's eye once and remember it against its element.
+const eyeCache = new WeakMap<HTMLElement, SVGGElement | null>();
+const lastPaint = new WeakMap<HTMLElement, { z: number; blink: boolean }>();
+
+function eyeOf(el: HTMLElement): SVGGElement | null {
+  let eye = eyeCache.get(el);
+  if (eye === undefined) {
+    eye = el.querySelector<SVGGElement>('[data-eye]');
+    eyeCache.set(el, eye);
+  }
+  return eye;
+}
+
 /** Write a fish's current state straight to the DOM — no React re-render per frame. */
 export function paintFish(el: HTMLElement, f: SimFish, env: SimEnv): void {
   const { scale, z, opacity } = depthOf(f.y, env.h);
@@ -307,10 +331,19 @@ export function paintFish(el: HTMLElement, f: SimFish, env: SimEnv): void {
   el.style.transform =
     `translate(${f.x}px, ${f.y}px) translate(-50%, -50%) scale(${scale * pulse}) ` +
     `rotate(${spinDeg}deg) scaleX(${f.dir === 1 ? -1 : 1})`;
-  el.style.zIndex = String(z);
-  el.style.opacity = String(opacity);
-  const eye = el.querySelector<SVGGElement>('[data-eye]');
-  if (eye) eye.style.transform = f.blinkFor > 0 ? 'scaleY(0.12)' : '';
+
+  // z and the blink only change occasionally — don't dirty style every frame.
+  const blink = f.blinkFor > 0;
+  const prev = lastPaint.get(el);
+  if (!prev || prev.z !== z) {
+    el.style.zIndex = String(z);
+    el.style.opacity = String(opacity);
+  }
+  if (!prev || prev.blink !== blink) {
+    const eye = eyeOf(el);
+    if (eye) eye.style.transform = blink ? 'scaleY(0.12)' : '';
+  }
+  if (!prev || prev.z !== z || prev.blink !== blink) lastPaint.set(el, { z, blink });
 }
 
 /** How much a plant should sway, and bend away from any fish pushing through it. */

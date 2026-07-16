@@ -112,11 +112,16 @@ export function SproutTank({ sound, reduceMotion }: GameProps) {
           addFlakes(e.attractor.x, e.attractor.y);
         }
 
-        // Flakes sink; any that reach the gravel are gone.
-        for (const f of [...e.flakes]) {
+        // Flakes sink; any that reach the gravel are gone. Iterate backwards so a
+        // flake can be removed without copying the array every frame.
+        for (let i = e.flakes.length - 1; i >= 0; i--) {
+          const f = e.flakes[i];
           f.y += f.vy * dt;
           f.x += Math.sin(now / 700 + f.id) * 6 * dt;
-          if (f.y > e.h - 74) dropFlake(f.id);
+          if (f.y > e.h - 74) {
+            dropFlake(f.id);
+            continue;
+          }
           const node = flakeEls.current.get(f.id);
           if (node) node.style.transform = `translate(${f.x}px, ${f.y}px) translate(-50%, -50%)`;
         }
