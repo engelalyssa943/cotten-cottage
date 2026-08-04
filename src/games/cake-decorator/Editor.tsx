@@ -198,7 +198,7 @@ export function Editor({
   );
 
   return (
-    <div className="flex h-screen w-screen flex-col bg-cream">
+    <div className="flex h-full w-full flex-col bg-cream">
       <div className="flex items-center gap-2 px-4 py-2">
         {iconBtn('Back to shelf', onBack, false, 'M15 18l-6-6 6-6')}
         <div className="flex flex-1 flex-wrap gap-2">

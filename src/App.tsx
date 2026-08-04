@@ -14,7 +14,7 @@ import { Cottage } from './shell/Cottage';
 import { RoomView } from './shell/RoomView';
 import { ParentArea } from './shell/ParentArea';
 import { WindDown } from './shell/WindDown';
-import { ExitCorner } from './shell/ExitCorner';
+import { ExitRail } from './shell/ExitRail';
 
 export default function App() {
   const hydrate = useApp((s) => s.hydrate);
@@ -65,9 +65,13 @@ export default function App() {
       case 'game': {
         const game = active ? GAMES.find((g) => g.id === screen.gameId) ?? null : null;
         return active && game ? (
-          <div className="h-screen w-screen">
-            <GameHost game={game} profile={active} onExit={pop} />
-            <ExitCorner onExit={pop} />
+          // The rail owns its column; the game gets everything that is left and
+          // fills it. Games size to this box, never to the viewport.
+          <div className="flex h-screen w-screen">
+            <ExitRail onExit={pop} />
+            <div className="relative min-w-0 flex-1">
+              <GameHost game={game} profile={active} onExit={pop} />
+            </div>
           </div>
         ) : (
           <ProfileSelect />

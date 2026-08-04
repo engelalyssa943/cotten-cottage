@@ -124,7 +124,7 @@ export default function CalmPondGame({ band, theme, sound, reduceMotion }: GameP
   return (
     <div
       ref={host}
-      className="relative h-screen w-screen touch-none overflow-hidden"
+      className="relative h-full w-full touch-none overflow-hidden"
       style={{ background: theme.scale[100] }}
     >
       <canvas

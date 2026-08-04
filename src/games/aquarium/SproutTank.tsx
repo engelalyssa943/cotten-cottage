@@ -210,7 +210,7 @@ export function SproutTank({ sound, reduceMotion }: GameProps) {
       ref={container}
       onPointerDown={down}
       onPointerMove={move}
-      className="relative h-screen w-screen touch-none overflow-hidden"
+      className="relative h-full w-full touch-none overflow-hidden"
       style={{ background: 'linear-gradient(180deg, #BEE7F5 0%, #7FC6E6 70%, #66B6DC 100%)' }}
     >
       <div className="absolute bottom-0 left-0 z-[1] h-16 w-full" style={{ background: '#E7CE8F' }} />

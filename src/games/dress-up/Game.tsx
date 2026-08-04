@@ -110,7 +110,7 @@ export default function DressUpGame({ save, sound, theme, reduceMotion, award }:
 
   return (
     <div
-      className="min-h-screen w-screen overflow-y-auto px-6 pb-10 pt-5"
+      className="h-full w-full overflow-y-auto px-6 pb-10 pt-5"
       style={{ background: 'linear-gradient(180deg,#FBF3E8 0%,#F3E6F0 100%)' }}
     >
       <h1 className="mb-4 text-center text-xl font-medium text-ink/55">👗 Wardrobe</h1>

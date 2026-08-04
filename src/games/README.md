@@ -26,6 +26,10 @@ touches **exactly one** file outside its own folder: `src/games/registry.ts`.
    - `award(id)` — idempotent; the engine plays the sound and renders the sparkle.
    - `sound`, `reduceMotion`, and `onExit`. **Never render your own back button** —
      call `onExit`. Gate motion behind `reduceMotion`.
+   - **Size to your container, not the viewport**: use `h-full w-full`, never
+     `h-screen`/`w-screen`. The app keeps its own column beside your game for the
+     hold-to-leave rail, so a game that grabs the whole viewport would sit under
+     it. Filling the box you're given means nothing of yours can ever be covered.
 
 4. **Register it.** Add two lines to `src/games/registry.ts`:
    ```ts
