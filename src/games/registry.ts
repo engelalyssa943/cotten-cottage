@@ -4,8 +4,9 @@ import type { GameModule } from '../engine/types';
 // Import the module and add it to the array. That's the whole checklist.
 import aquarium from './aquarium';
 import cakeDecorator from './cake-decorator';
+import dressUp from './dress-up';
 
-export const GAMES: GameModule[] = [aquarium, cakeDecorator];
+export const GAMES: GameModule[] = [aquarium, cakeDecorator, dressUp];
 
 // Warn loudly in development if two modules ever share an id (ids are forever).
 if (import.meta.env.DEV) {
