@@ -292,6 +292,18 @@
   animation: cc-blink-eye 5.6s ease-in-out infinite;
 }
 
+/* Tipped out of the box and bouncing onto the floor. Applied to an inner
+   element, never the positioned one: animation declarations outrank inline
+   styles, so animating the same transform would freeze whatever the element
+   was using it for. */
+@keyframes cc-drop {
+  0% { transform: translateY(-150px) scale(0.9); opacity: 0; }
+  58% { transform: translateY(0) scale(1.05); opacity: 1; }
+  78% { transform: translateY(-9px) scale(0.99); }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+.cc-drop { display: block; animation: cc-drop 520ms cubic-bezier(0.3, 0.8, 0.4, 1.1) both; }
+
 /* Award celebration (rendered by the engine, not by games). */
 @keyframes cc-pop {
   0% {
