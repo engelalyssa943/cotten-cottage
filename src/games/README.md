@@ -27,9 +27,15 @@ touches **exactly one** file outside its own folder: `src/games/registry.ts`.
    - `sound`, `reduceMotion`, and `onExit`. **Never render your own back button** —
      call `onExit`. Gate motion behind `reduceMotion`.
    - **Size to your container, not the viewport**: use `h-full w-full`, never
-     `h-screen`/`w-screen`. The app keeps its own column beside your game for the
-     hold-to-leave rail, so a game that grabs the whole viewport would sit under
-     it. Filling the box you're given means nothing of yours can ever be covered.
+     `h-screen`/`w-screen`. Filling the box you're given is what keeps a game
+     from fighting the app chrome around it.
+   - **Keep your controls out of the leave rail.** The app draws a hold-to-leave
+     rail down the left edge, `--cc-rail` wide, as frosted glass over your game.
+     Paint your background across the full width — it looks best showing through —
+     but inset anything tappable with `pl-[var(--cc-rail)]` on your root (or
+     `pl-[calc(var(--cc-rail)+1.5rem)]` if you also want your own gutter). A game
+     that is pure full-bleed with nothing to tap, like a tap-anywhere world,
+     needs no inset at all.
 
 4. **Register it.** Add two lines to `src/games/registry.ts`:
    ```ts

@@ -102,13 +102,14 @@ export default function App() {
       case 'game': {
         const game = active ? GAMES.find((g) => g.id === screen.gameId) ?? null : null;
         return active && game ? (
-          // The rail owns its column; the game gets everything that is left and
-          // fills it. Games size to this box, never to the viewport.
-          <div className="flex h-screen w-screen">
-            <ExitRail onExit={pop} />
-            <div className="relative min-w-0 flex-1">
+          // The game paints the whole screen; the rail lies on top of it as
+          // frosted glass. Games size to this box and inset their controls by
+          // --cc-rail, so nothing of theirs is ever underneath it.
+          <div className="relative h-screen w-screen">
+            <div className="absolute inset-0">
               <GameHost game={game} profile={active} onExit={pop} />
             </div>
+            <ExitRail onExit={pop} />
           </div>
         ) : (
           <ProfileSelect />

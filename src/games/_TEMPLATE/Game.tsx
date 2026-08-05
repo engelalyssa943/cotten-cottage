@@ -20,8 +20,12 @@ export default function TemplateGame({ theme, band, save, sound, onExit }: GameP
   }, [save]);
 
   return (
+    // h-full/w-full, never h-screen: fill the box you're handed. The pl-[...]
+    // keeps your controls out of the app's hold-to-leave rail while your
+    // background still paints the whole screen underneath it. A game that is
+    // pure full-bleed with no controls (a tap-anywhere world) can drop it.
     <div
-      className="grid h-full w-full place-items-center gap-4 p-8"
+      className="grid h-full w-full place-items-center gap-4 p-8 pl-[calc(var(--cc-rail)+2rem)]"
       style={{ background: theme.scale[100] }}
     >
       {/* TODO: build the game here. Branch on `band` to serve different ages. */}

@@ -9,8 +9,11 @@ import { useHold } from './useHold';
  * the aquarium's first fish — and there is no corner that is free in every game:
  * the trays are content-width, so a spot that clears them on a big screen is
  * inside them on a smaller one. Owning a column instead makes overlap
- * impossible by construction, for the games that exist and the ones that don't
- * yet.
+ * impossible, for the games that exist and the ones that don't yet.
+ *
+ * The lane is `--cc-rail` wide. Games paint their background across the full
+ * width and inset only their controls by it, so this is frosted glass lying on
+ * top of the tank or the pond rather than a coloured stripe cut out beside it.
  *
  * It stays a hold rather than a tap so a 1-year-old slapping the screen can't
  * fall out of a game, and an in-progress cake can't be lost by accident. A
@@ -22,8 +25,7 @@ export function ExitRail({ onExit }: { onExit: () => void }) {
   const C = 2 * Math.PI * R;
   return (
     <div
-      className="flex w-[84px] shrink-0 flex-col items-center justify-end pb-5"
-      style={{ background: 'var(--cc-paint)' }}
+      className="absolute inset-y-0 left-0 z-30 flex w-[var(--cc-rail)] flex-col items-center justify-end pb-5 bg-white/25 backdrop-blur-md"
     >
       <button
         {...bind}

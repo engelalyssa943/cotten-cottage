@@ -407,7 +407,7 @@ export function BloomDesigner({ save, award, sound, theme, reduceMotion }: GameP
   const decorItems = state.items.filter((i) => !i.kind.startsWith('fish:'));
 
   return (
-    <div className="flex h-full w-full flex-col transition-colors duration-500" style={{ background: state.bg }}>
+    <div className="flex h-full w-full flex-col pl-[var(--cc-rail)] transition-colors duration-500" style={{ background: state.bg }}>
       <div className="flex flex-wrap items-center justify-center gap-6 px-4 py-2">
         <div className="flex items-center gap-2">
           <span className="text-lg">💧</span>

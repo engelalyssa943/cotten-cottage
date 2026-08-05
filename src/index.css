@@ -3,6 +3,14 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* The column the app keeps for the hold-to-leave rail. Games paint their
+       background underneath it and inset only their controls by this much, so
+       the rail reads as frosted glass over the game rather than a stripe beside
+       it — while still being a lane nothing can be laid out into. */
+    --cc-rail: 84px;
+  }
+
   html,
   body,
   #root {

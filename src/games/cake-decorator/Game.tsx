@@ -96,7 +96,7 @@ export default function CakeGame({ save, sound, theme, reduceMotion }: GameProps
 
   return (
     <div
-      className="h-full w-full overflow-y-auto px-6 pb-10 pt-5"
+      className="h-full w-full overflow-y-auto pr-6 pl-[calc(var(--cc-rail)+1.5rem)] pb-10 pt-5"
       style={{ background: 'linear-gradient(180deg,#FBF3E8 0%,#F4E7D6 100%)' }}
     >
       <h1 className="mb-5 text-center text-xl font-medium text-ink/55">🧁 Bakery</h1>
