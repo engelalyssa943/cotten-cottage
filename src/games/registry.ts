@@ -7,8 +7,9 @@ import cakeDecorator from './cake-decorator';
 import calmPond from './calm-pond';
 import dressUp from './dress-up';
 import moonFish from './moon-fish';
+import peekaboo from './peekaboo';
 
-export const GAMES: GameModule[] = [aquarium, cakeDecorator, calmPond, dressUp, moonFish];
+export const GAMES: GameModule[] = [aquarium, cakeDecorator, calmPond, dressUp, moonFish, peekaboo];
 
 // Warn loudly in development if two modules ever share an id (ids are forever).
 if (import.meta.env.DEV) {
