@@ -2,9 +2,10 @@ import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
-// Served from a GitHub Pages project site by default (https://<user>.github.io/<repo>/).
-// Override with VITE_BASE at build time if your repo name differs.
-const base = process.env.VITE_BASE ?? '/cotten-cottage/';
+// Served from the custom domain in public/CNAME (https://cottage.alyssaengel.com/),
+// which sits at the domain root rather than a /<repo>/ subpath. Override with
+// VITE_BASE at build time if that ever changes back to a bare github.io URL.
+const base = process.env.VITE_BASE ?? '/';
 
 // The strict Content-Security-Policy is injected into the PRODUCTION html only.
 // Applying it in dev would break Vite's HMR (inline scripts + ws), so we scope it
