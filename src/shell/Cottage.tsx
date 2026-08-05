@@ -7,7 +7,6 @@ import { resolveTheme } from '../theme/resolve';
 import { useApp } from '../store/app';
 import { dayPhase, weatherFor } from './time';
 import { CottageScene } from './CottageScene';
-import { ParentGate } from './ParentGate';
 import { Avatar } from './Avatar';
 
 const DOOR_NEW_WINDOW_MS = 14 * 24 * 60 * 60 * 1000;
@@ -53,16 +52,15 @@ export function Cottage({ profile }: { profile: Profile }) {
         onEnter={onEnter}
       />
 
-      {/* Switch child — small, in the top-left; not destructive. */}
+      {/* Switch child — not destructive. Sits clear of the left lane, which the
+          app keeps for the grown-ups button on every screen. */}
       <button
         onClick={() => reset({ kind: 'profiles' })}
-        className="absolute left-4 top-4 rounded-full bg-white/70 p-1 shadow active:scale-95"
+        className="absolute left-[96px] top-4 rounded-full bg-white/70 p-1 shadow active:scale-95"
         aria-label="Switch player"
       >
         <Avatar profile={profile} size={52} />
       </button>
-
-      <ParentGate onPass={() => push({ kind: 'parent' })} />
     </div>
   );
 }

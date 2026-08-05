@@ -2,10 +2,27 @@ import { useState } from 'react';
 import { useHold } from './useHold';
 
 /**
- * The grown-up gate: hold the bottom corner for 3 seconds, then answer a
- * two-digit × one-digit multiplication. Not a PIN — PINs get watched and
- * memorized. A wrong answer just gently clears; there is no lockout (it's an
- * adult), and nothing here is child-hittable.
+ * The way in to the grown-up area, available on every screen the children see.
+ *
+ * It used to be an invisible hotspot in the bottom corner, rendered only on the
+ * cottage and the profile picker — so once a child was inside a room or a game
+ * there was no way to reach the settings at all without backing all the way
+ * out, and no way to discover it in the first place. Now it is a real button,
+ * in the lane the app owns, on every screen.
+ *
+ * Visible does not mean open. Two things stand in the way of a five-year-old,
+ * and they do different jobs:
+ *
+ *  - It is a HOLD, not a tap. A child who prods it gets nothing at all, so she
+ *    is never staring at a keypad she can't use. The ring that starts filling
+ *    under an adult's finger is what teaches the adult to keep holding — which
+ *    is why the button can be obvious without being a way in.
+ *  - Behind it is arithmetic she has years to go before she can do. That is the
+ *    actual lock; the hold is only there to keep the dialog out of her way.
+ *
+ * Deliberately not a PIN: PINs get watched over your shoulder and remembered.
+ * A wrong answer just clears, because the person typing is an adult and locking
+ * them out of their own tablet helps nobody.
  */
 export function ParentGate({ onPass }: { onPass: () => void }) {
   const [challenge, setChallenge] = useState<{ a: number; b: number } | null>(null);
@@ -15,7 +32,7 @@ export function ParentGate({ onPass }: { onPass: () => void }) {
   const { progress, bind } = useHold(() => {
     setChallenge({ a: 11 + Math.floor(Math.random() * 88), b: 3 + Math.floor(Math.random() * 6) });
     setEntry('');
-  }, 3000);
+  }, 1500);
 
   function press(d: string) {
     if (d === '⌫') setEntry((e) => e.slice(0, -1));
@@ -35,33 +52,39 @@ export function ParentGate({ onPass }: { onPass: () => void }) {
     }
   }
 
+  const R = 28;
+  const C = 2 * Math.PI * R;
+
   return (
     <>
-      {/* Invisible corner hotspot with a hold-progress ring. */}
-      <div
+      {/* Top of the left lane: the one strip of screen no game may lay out into,
+          so this sits in the same place everywhere and covers nothing. */}
+      <button
         {...bind}
-        className="fixed bottom-0 right-0 z-40 h-24 w-24"
-        style={{ touchAction: 'none' }}
         aria-label="Grown-ups"
-        role="button"
+        className="fixed left-[10px] top-[10px] z-40 grid h-16 w-16 place-items-center rounded-full bg-white/40 shadow-sm backdrop-blur-sm active:bg-white/70"
+        style={{ touchAction: 'none' }}
       >
+        <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="var(--cc-ink)" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" opacity="0.5">
+          <rect x="5" y="11" width="14" height="9" rx="2.5" />
+          <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+        </svg>
         {progress > 0 && (
-          <svg viewBox="0 0 48 48" className="absolute bottom-3 right-3 h-12 w-12 -rotate-90">
-            <circle cx="24" cy="24" r="20" fill="none" stroke="#00000018" strokeWidth="4" />
+          <svg viewBox="0 0 64 64" className="pointer-events-none absolute inset-0 h-full w-full -rotate-90">
             <circle
-              cx="24"
-              cy="24"
-              r="20"
+              cx="32"
+              cy="32"
+              r={R}
               fill="none"
               stroke="var(--cc-accent)"
               strokeWidth="4"
               strokeLinecap="round"
-              strokeDasharray={2 * Math.PI * 20}
-              strokeDashoffset={2 * Math.PI * 20 * (1 - progress)}
+              strokeDasharray={C}
+              strokeDashoffset={C * (1 - progress)}
             />
           </svg>
         )}
-      </div>
+      </button>
 
       {challenge && (
         <div className="fixed inset-0 z-50 grid place-items-center bg-black/30 p-6">

@@ -17,6 +17,7 @@ import { WindDown } from './shell/WindDown';
 import { ExitRail } from './shell/ExitRail';
 import { Attic } from './shell/Attic';
 import { NightShade } from './shell/NightShade';
+import { ParentGate } from './shell/ParentGate';
 import { flushSaves } from './engine/save';
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
   const stack = useApp((s) => s.stack);
   const activeProfileId = useApp((s) => s.activeProfileId);
   const pop = useApp((s) => s.pop);
+  const push = useApp((s) => s.push);
   const reset = useApp((s) => s.reset);
   const setActiveProfile = useApp((s) => s.setActiveProfile);
 
@@ -122,6 +124,15 @@ export default function App() {
   return (
     <>
       {renderScreen()}
+
+      {/* The way in to the settings, on every screen a child can reach — the
+          cottage, a room, the attic, and inside any game. Not on the grown-up
+          area itself (you're already there) and not over the wind-down, which
+          has its own way out. */}
+      {screen.kind !== 'parent' && screen.kind !== 'winddown' && (
+        <ParentGate onPass={() => push({ kind: 'parent' })} />
+      )}
+
       <AwardOverlay />
       {/* Last, and over everything: the evening light. */}
       <NightShade />

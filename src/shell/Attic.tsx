@@ -55,7 +55,7 @@ export function Attic({ profile }: { profile: Profile }) {
 
       <button
         onClick={pop}
-        className="absolute left-4 top-4 z-10 grid h-16 w-16 place-items-center rounded-full bg-white/80 shadow active:scale-95"
+        className="absolute left-[96px] top-4 z-10 grid h-16 w-16 place-items-center rounded-full bg-white/80 shadow active:scale-95"
         aria-label="Back to the cottage"
       >
         <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke={theme.ink} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">

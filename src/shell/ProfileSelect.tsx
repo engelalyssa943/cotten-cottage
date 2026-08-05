@@ -3,7 +3,6 @@ import { db } from '../db/db';
 import type { Profile } from '../engine/types';
 import { useApp } from '../store/app';
 import { Avatar } from './Avatar';
-import { ParentGate } from './ParentGate';
 
 /** "Who's playing?" — photo/initial avatars, no reading required. */
 export function ProfileSelect() {
@@ -56,7 +55,6 @@ export function ProfileSelect() {
           </div>
         )}
       </div>
-      <ParentGate onPass={() => push({ kind: 'parent' })} />
     </div>
   );
 }
