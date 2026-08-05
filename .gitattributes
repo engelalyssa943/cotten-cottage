@@ -1,0 +1,3 @@
+# Read by tooling that expects Unix line endings, on a machine where
+# core.autocrlf would otherwise hand it CRLF.
+.nvmrc text eol=lf
