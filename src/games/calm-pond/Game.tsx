@@ -47,27 +47,37 @@ export default function CalmPondGame({ band, theme, sound, reduceMotion }: GameP
     let prev = performance.now() / 1000;
     const tick = (t: number) => {
       const now = t / 1000;
-      const dt = Math.min(0.05, now - prev);
+      // Also floored at 0: a frame timestamp that lands before the previous one
+      // would otherwise run the whole simulation backwards.
+      const dt = Math.max(0, Math.min(0.05, now - prev));
       prev = now;
       const p = pond.current;
-      if (p) {
-        const { reduceMotion: rm, theme: th, sound: sfx } = live.current;
-        step(p, now, dt, rm);
-        draw(ctx, p, now, palette(th.favorite, th.accent), rm);
+      try {
+        if (p) {
+          const { reduceMotion: rm, theme: th, sound: sfx } = live.current;
+          step(p, now, dt, rm);
+          draw(ctx, p, now, palette(th.favorite, th.accent), rm);
 
-        // The pond hums to itself once it has been left alone for a while.
-        // Driven off the frame clock, never off a countdown.
-        if (now - lastTouchAt.current > 12) {
-          if (nextAmbient.current === 0) nextAmbient.current = now + 4;
-          else if (now >= nextAmbient.current) {
-            sfx.chime(Math.floor(Math.random() * 5) * (Math.random() < 0.5 ? 1 : 2));
-            nextAmbient.current = now + 9 + Math.random() * 6;
+          // The pond hums to itself once it has been left alone for a while.
+          // Driven off the frame clock, never off a countdown.
+          if (now - lastTouchAt.current > 12) {
+            if (nextAmbient.current === 0) nextAmbient.current = now + 4;
+            else if (now >= nextAmbient.current) {
+              sfx.chime(Math.floor(Math.random() * 5) * (Math.random() < 0.5 ? 1 : 2));
+              nextAmbient.current = now + 9 + Math.random() * 6;
+            }
+          } else {
+            nextAmbient.current = 0;
           }
-        } else {
-          nextAmbient.current = 0;
         }
+      } catch (err) {
+        // A bad frame must never end the pond. Dropping one frame is invisible;
+        // dropping the loop means the toy is dead until a grown-up rescues it,
+        // which is exactly the failure this game must not have.
+        if (import.meta.env.DEV) console.error('[calm-pond] skipped a frame', err);
+      } finally {
+        raf = requestAnimationFrame(tick);
       }
-      raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
 

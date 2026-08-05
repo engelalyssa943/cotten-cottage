@@ -29,12 +29,18 @@ const ROOM_LABEL: Record<Room, string> = {
   door: "Aunt Alyssa's Door",
 };
 
-const SKY: Record<DayPhase, [string, string]> = {
-  morning: ['#FBE7D6', '#CDE7F5'],
-  day: ['#CFEBFA', '#EAF6FF'],
-  dusk: ['#F6C9A8', '#B79AD1'],
-  night: ['#2B2E5A', '#4A4E86'],
-};
+/**
+ * One sky, every hour of the day.
+ *
+ * This used to be a palette per phase, and the cottage repainted itself each
+ * evening — purple sky, dark grass, a yellow wash over every room — which came
+ * out looking like a different house rather than the same house at night. The
+ * colours are now constant and the time of day is carried entirely by
+ * `NightShade`, which dims and warms the finished picture instead.
+ */
+const SKY: [string, string] = ['#CFEBFA', '#EAF6FF'];
+const GRASS = '#93C982';
+const GRASS_DEEP = '#7FB870';
 
 const AUNT_DOOR = '#E58FC0'; // Aunt Alyssa's door is always her color, not the child's.
 const AUNT_DOOR_DEEP = '#C56BA2';
@@ -96,7 +102,7 @@ export function CottageScene({
   const roofPeakY = bodyY - roofH;
   const startX = bodyX + wallPad;
   const isDark = phase === 'night' || phase === 'dusk';
-  const [sky0, sky1] = SKY[phase];
+  const [sky0, sky1] = SKY;
 
   return (
     <svg
@@ -190,11 +196,11 @@ export function CottageScene({
       {/* Ground */}
       <path
         d={`M0 ${groundY} Q 250 ${groundY - 24} 500 ${groundY} T 1000 ${groundY} V 620 H 0 Z`}
-        fill={phase === 'night' ? '#4E6E4A' : '#93C982'}
+        fill={GRASS}
       />
       <path
         d={`M0 ${groundY + 26} Q 250 ${groundY + 4} 500 ${groundY + 26} T 1000 ${groundY + 26} V 620 H 0 Z`}
-        fill={phase === 'night' ? '#3F5C3D' : '#7FB870'}
+        fill={GRASS_DEEP}
         opacity="0.6"
       />
 
@@ -306,8 +312,7 @@ export function CottageScene({
           <Zone key={room} label={ROOM_LABEL[room]} onEnter={() => onEnter(room)}>
             <g className={reduceMotion ? '' : 'cc-room-in'}>
               {/* room back wall + warm glow at dusk/night */}
-              <rect x={x} y={y} width={cw} height={chH} rx="18" fill={isDark ? theme.scale[200] : theme.scale[100]} />
-              {isDark && <rect x={x} y={y} width={cw} height={chH} rx="18" fill="#FFE9A8" opacity="0.22" />}
+              <rect x={x} y={y} width={cw} height={chH} rx="18" fill={theme.scale[100]} />
               {/* floor */}
               <rect x={x} y={y + chH - 26} width={cw} height="26" rx="8" fill="#D9B88C" />
               {roomMotif(room, x, y, cw, chH, theme)}

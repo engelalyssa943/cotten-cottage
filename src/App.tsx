@@ -16,6 +16,7 @@ import { ParentArea } from './shell/ParentArea';
 import { WindDown } from './shell/WindDown';
 import { ExitRail } from './shell/ExitRail';
 import { Attic } from './shell/Attic';
+import { NightShade } from './shell/NightShade';
 import { flushSaves } from './engine/save';
 
 export default function App() {
@@ -122,6 +123,8 @@ export default function App() {
     <>
       {renderScreen()}
       <AwardOverlay />
+      {/* Last, and over everything: the evening light. */}
+      <NightShade />
     </>
   );
 }

@@ -189,11 +189,36 @@ export function addRipple(p: Pond, x: number, y: number, now: number, strength =
   if (p.ripples.length > 60) p.ripples.splice(0, p.ripples.length - 60);
 }
 
+/**
+ * Never negative.
+ *
+ * A touch stamps `born` from performance.now(), but the loop measures against
+ * the animation frame's timestamp, which is when the frame STARTED. A finger
+ * that lands after that instant is therefore born very slightly in the future,
+ * and for exactly one frame `now - born` is negative. That fed a negative
+ * radius to ctx.arc(), which throws, which killed the frame loop for good —
+ * the pond froze while the rest of the app carried on. Clamped at the source
+ * so no drawing call can ever be handed one.
+ */
 function ringRadius(p: Pond, r: Ripple, now: number, reduceMotion: boolean): number {
-  const age = now - r.born;
+  const age = Math.max(0, now - r.born);
   // a still glow, not a spreading front
   if (reduceMotion) return 0.06 * p.unit * r.strength;
   return age * RIPPLE_SPEED * p.unit * r.strength;
+}
+
+/**
+ * Shortest signed turn from one heading to another.
+ *
+ * Deliberately not a `while (diff > PI) diff -= 2PI` loop: those spin forever
+ * if a heading ever goes non-finite, and an infinite loop in here would hang
+ * the whole app rather than just this game — with no way out but force-quitting.
+ */
+function angleDelta(from: number, to: number): number {
+  const d = (to - from) % (Math.PI * 2);
+  if (d > Math.PI) return d - Math.PI * 2;
+  if (d < -Math.PI) return d + Math.PI * 2;
+  return d;
 }
 
 function ringLife(reduceMotion: boolean): number {
@@ -248,23 +273,20 @@ export function step(p: Pond, now: number, dt: number, reduceMotion: boolean): v
       const d = Math.hypot(k.x - r.x, k.y - r.y);
       if (d < nd) { nd = d; nearest = r; }
     }
-    if (nearest) {
+    if (nearest && notice > 0) {
       const want = Math.atan2(nearest.y - k.y, nearest.x - k.x);
-      let diff = want - k.ang;
-      while (diff > Math.PI) diff -= Math.PI * 2;
-      while (diff < -Math.PI) diff += Math.PI * 2;
-      k.ang += diff * 0.5 * dt * (1 - nd / notice);
+      k.ang += angleDelta(k.ang, want) * 0.5 * dt * (1 - nd / notice);
     }
 
     // turn away from the bank rather than bumping into it
     const m = 0.09 * p.unit;
     if (k.x < m || k.x > p.w - m || k.y < m || k.y > p.h - m) {
       const want = Math.atan2(p.h / 2 - k.y, p.w / 2 - k.x);
-      let diff = want - k.ang;
-      while (diff > Math.PI) diff -= Math.PI * 2;
-      while (diff < -Math.PI) diff += Math.PI * 2;
-      k.ang += diff * 1.6 * dt;
+      k.ang += angleDelta(k.ang, want) * 1.6 * dt;
     }
+
+    // Keep the heading in one turn of the circle so it can never drift huge.
+    k.ang %= Math.PI * 2;
 
     const v = k.speed * speedScale;
     k.x += Math.cos(k.ang) * v * dt;
