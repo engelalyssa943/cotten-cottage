@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from './db/db';
 import { GAMES } from './games/registry';
@@ -15,6 +15,8 @@ import { RoomView } from './shell/RoomView';
 import { ParentArea } from './shell/ParentArea';
 import { WindDown } from './shell/WindDown';
 import { ExitRail } from './shell/ExitRail';
+import { Attic } from './shell/Attic';
+import { flushSaves } from './engine/save';
 
 export default function App() {
   const hydrate = useApp((s) => s.hydrate);
@@ -50,6 +52,35 @@ export default function App() {
     }
   }, [screen.kind, active, profiles, reset, setActiveProfile]);
 
+  /**
+   * Wind-down. Off unless a grown-up set it. The clock runs from the moment a
+   * child starts playing and keeps running as they move around the cottage — it
+   * only restarts when the ending itself is left. Driven off the frame clock, so
+   * it also pauses while the app is in the background, and so there is no
+   * countdown anywhere in the codebase.
+   */
+  const windDownMinutes = useApp((s) => s.windDownMinutes);
+  const winding = screen.kind === 'winddown';
+  const screenKind = useRef(screen.kind);
+  screenKind.current = screen.kind;
+
+  useEffect(() => {
+    if (!windDownMinutes || !activeProfileId || winding) return;
+    const ms = windDownMinutes * 60_000;
+    const t0 = performance.now();
+    let raf = 0;
+    const tick = (t: number) => {
+      // Never pull the rug out from under a grown-up mid-setup.
+      if (t - t0 >= ms && screenKind.current !== 'parent') {
+        void flushSaves().then(() => reset({ kind: 'winddown' }));
+        return;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [windDownMinutes, activeProfileId, winding, reset]);
+
   function renderScreen() {
     switch (screen.kind) {
       case 'profiles':
@@ -61,7 +92,13 @@ export default function App() {
       case 'cottage':
         return active ? <Cottage profile={active} /> : <ProfileSelect />;
       case 'room':
-        return active ? <RoomView profile={active} room={screen.room} /> : <ProfileSelect />;
+        if (!active) return <ProfileSelect />;
+        // The attic isn't made of games — it's the Collection Book.
+        return screen.room === 'attic' ? (
+          <Attic profile={active} />
+        ) : (
+          <RoomView profile={active} room={screen.room} />
+        );
       case 'game': {
         const game = active ? GAMES.find((g) => g.id === screen.gameId) ?? null : null;
         return active && game ? (

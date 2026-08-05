@@ -28,3 +28,13 @@ export async function awardCollectible(
   sound.collected();
   for (const fn of listeners) fn(id);
 }
+
+/**
+ * Replay a collectible's celebration without awarding anything. The Collection
+ * Book uses this: tapping something already found plays its sparkle again, which
+ * is the actual reward. Nothing is written, so it can be done forever.
+ */
+export function announceCollectible(id: CollectibleId, sound: SoundApi): void {
+  sound.collected();
+  for (const fn of listeners) fn(id);
+}
