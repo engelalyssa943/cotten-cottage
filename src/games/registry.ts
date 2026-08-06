@@ -7,6 +7,7 @@ import cakeDecorator from './cake-decorator';
 import calmPond from './calm-pond';
 import dressUp from './dress-up';
 import moonFish from './moon-fish';
+import howMany from './how-many';
 import jigsaw from './jigsaw';
 import memoryPairs from './memory-pairs';
 import peekaboo from './peekaboo';
@@ -17,6 +18,7 @@ export const GAMES: GameModule[] = [
   cakeDecorator,
   calmPond,
   dressUp,
+  howMany,
   jigsaw,
   memoryPairs,
   moonFish,
