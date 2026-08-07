@@ -304,6 +304,22 @@
 }
 .cc-drop { display: block; animation: cc-drop 520ms cubic-bezier(0.3, 0.8, 0.4, 1.1) both; }
 
+/* A bubble going. The ring springs outward and thins away; anything that was
+   inside drifts up out of it. */
+@keyframes cc-burst {
+  0% { transform: scale(0.94); opacity: 0.9; }
+  55% { transform: scale(1.35); opacity: 0.55; }
+  100% { transform: scale(1.6) translateY(-14px); opacity: 0; }
+}
+.cc-burst { animation: cc-burst 700ms cubic-bezier(0.2, 0.7, 0.3, 1) both; }
+
+/* Gentle motion: it simply fades where it was. */
+@keyframes cc-burst-soft {
+  0% { opacity: 0.85; }
+  100% { opacity: 0; }
+}
+.cc-burst-soft { animation: cc-burst-soft 700ms ease-out both; }
+
 /* Award celebration (rendered by the engine, not by games). */
 /* Entrance only. The old version baked the fade-out into the same 2.2s, which
    is what made the story unreadable — how long the card stays is now the

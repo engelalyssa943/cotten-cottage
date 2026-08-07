@@ -3,6 +3,7 @@ import type { GameModule } from '../engine/types';
 // THE ONLY FILE TOUCHED WHEN ADDING A GAME.
 // Import the module and add it to the array. That's the whole checklist.
 import aquarium from './aquarium';
+import bubbles from './bubbles';
 import cakeDecorator from './cake-decorator';
 import calmPond from './calm-pond';
 import dressUp from './dress-up';
@@ -15,6 +16,7 @@ import shapePost from './shape-post';
 
 export const GAMES: GameModule[] = [
   aquarium,
+  bubbles,
   cakeDecorator,
   calmPond,
   dressUp,
